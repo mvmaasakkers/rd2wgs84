@@ -7,8 +7,10 @@ function rd2wgs48($x, $y)
 	$wgs84_longitude_base	=  5.38720621;    # = λ0            2
 	$rd_x_coordinate		= $x;
 	$rd_y_coordinate		= $y;
-	
-	
+
+	$calc_latt = 0;
+	$calc_long = 0;
+
 	$Kpq[0][1]                    =     3235.65389;
 	$Kpq[2][0]                    =      -32.58297;
 	$Kpq[0][2]                    =       -0.24750;
@@ -20,7 +22,7 @@ function rd2wgs48($x, $y)
 	$Kpq[2][3]                    =       -0.00039;
 	$Kpq[4][1]                    =        0.00033;
 	$Kpq[1][1]                    =       -0.00012;
-	
+
 	$Lpq[1][0]                    =	5260.52916;
 	$Lpq[1][1]                    =      105.94684;
 	$Lpq[1][2]                    =        2.45656;
@@ -36,21 +38,26 @@ function rd2wgs48($x, $y)
 
 	$d_lattitude                  = ($x - $rd_x_base) * 0.00001;         # dX = (X - X0) 10^5
 	$d_longitude                  = ($y - $rd_y_base) * 0.00001;         # dY = (Y - Y0) 10^5
-	
+
 	$pmax = 5;
 	$qmax = 4;
-	
+
 	for($p = 0; $p <= $pmax; $p++)
 	{
 		for($q = 0; $q <= $qmax; $q++)
 		{
-			$calc_latt += $Kpq[$p][$q] * pow($d_lattitude, $p) * pow($d_longitude, $q);
-			$calc_long += $Lpq[$p][$q] * pow($d_lattitude, $p) * pow($d_longitude, $q);
+			if( isset($Kpq[$p][$q])) {
+				$calc_latt += $Kpq[$p][$q] * pow($d_lattitude, $p) * pow($d_longitude, $q);
+			}
+
+			if( isset($Lpq[$p][$q])) {
+				$calc_long += $Lpq[$p][$q] * pow($d_lattitude, $p) * pow($d_longitude, $q);
+			}
 		}
 	}
 
 	$wgs84_lattitude		= $wgs84_lattitude_base + ($calc_latt / 3600);
 	$wgs84_longitude		= $wgs84_longitude_base + ($calc_long / 3600);
-	
+
 	return array("latitude" => $wgs84_lattitude, "longitude" => $wgs84_longitude);
 }
