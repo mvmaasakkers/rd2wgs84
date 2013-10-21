@@ -1,7 +1,8 @@
 rd2wgs48
 ========
 
-RD coordinates to WGS48 conversion function
+RD coordinates to WGS48 (latitude longitude)conversion function
+Rijks driehoek coördinaten naar WGS48 (latitude longitude) conversie
 
 Usage:
 
